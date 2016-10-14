@@ -29,6 +29,6 @@ class BillsController extends Controller
 
     public function create()
     {
-    	return view('');
+    	return view('bills.edit');
     }
 }
