@@ -17,4 +17,11 @@ class BillRepository {
         
         return $query->get();
     }
+    
+    public function create($input)
+    {
+        $bill = $this->bill->create($input);
+        
+        return $bill;
+    }
 }

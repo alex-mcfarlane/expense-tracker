@@ -13,10 +13,12 @@
         <div class="col-md-8 col-md-offset-2">
             <form class="form-horizontal" method="POST" action="{{URL::to('bills')}}">
                 
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                
                 <div class="form-group">
                     <label for="name" class="col-md-3 control-label">Name</label>
                     
-                    <div class="col-md-7 col-sm-12">
+                    <div class="col-md-9 col-sm-12">
                         <input type="text" class="form-control" id="name" name="name"/>
                     </div>
                 </div>
