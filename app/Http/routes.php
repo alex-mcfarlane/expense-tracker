@@ -21,6 +21,7 @@ Route::get('/home', 'HomeController@index');
 
 Route::group(['middleware'=>'auth'], function() {
 	Route::get('/bills', 'BillsController@index');
+	Route::get('bills/view/{id}', 'BillsController@view');
 	Route::get('/bills/create', 'BillsController@create');
     Route::post('/bills', 'BillsController@store');
 });

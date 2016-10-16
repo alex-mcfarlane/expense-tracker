@@ -1,6 +1,8 @@
 <?php
+namespace App\ExpenseTracker\Gateways;
 
 use App\ExpenseTracker\Repositories\BillRepository;
+use Auth;
 
 class BillGateway {
     protected $billRepo;
@@ -16,7 +18,10 @@ class BillGateway {
         if(! $bill = $this->billRepo->create($input)) {
             return $listener->returnWithError('Unable to save bill');
         }
-        
+
+        $bill->user()->associate(Auth::user());
+        $bill->save();
+
         return $listener->returnItem($bill);
     }
 }

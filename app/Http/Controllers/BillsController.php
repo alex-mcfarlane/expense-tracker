@@ -5,16 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\ExpenseTracker\Repositories\BillRepository;
+use App\ExpenseTracker\Gateways\BillGateway;
 
 class BillsController extends BaseController
 {
+    protected $billGateway;
     protected $billRepo;
     
-    
-    public function __construct(BillRepository $billRepository)
+    public function __construct(BillGateway $billGateway, BillRepository $billRepository)
     {
         $this->entity = 'bills';
         $this->billRepo = $billRepository;
+        $this->billGateway = $billGateway;
     }
     
     public function index(BillRepository $billRepository)
@@ -26,6 +28,15 @@ class BillsController extends BaseController
         ];
         
         return view('bills.index', $data);
+    }
+
+    public function view($id)
+    {
+        $bill = $this->billRepo->get($id);
+        $data = [
+            'bill' => $bill
+        ];
+        return view('bills.view', $data);
     }
 
     public function create()

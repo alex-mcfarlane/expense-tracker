@@ -11,7 +11,7 @@ class BaseController extends Controller
     
     public function returnItem($model)
     {
-        return view($this->entity.'.view', compact($model));
+        return redirect()->to($this->entity."/view/".$model->id);
     }
     
     public function returnWithError($error)

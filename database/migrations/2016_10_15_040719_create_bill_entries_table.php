@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBillsTable extends Migration
+class CreateBillEntriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +12,13 @@ class CreateBillsTable extends Migration
      */
     public function up()
     {
-        Schema::create('bills', function (Blueprint $table) {
+        Schema::create('bill_entries', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->unique();
-            $table->integer('category_id')->null();
-            $table->integer('user_id');
+            $table->integer('bill_id');
+            $table->decimal('amount', 10, 2);
+            $table->decimal('balance', 10, 2);
+            $table->decimal('paid', 10, 2);
+            $table->date('due_date');
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ class CreateBillsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('bills');
+        Schema::drop('billEntries');
     }
 }

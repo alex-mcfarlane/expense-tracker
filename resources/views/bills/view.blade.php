@@ -25,7 +25,7 @@
             </thead>
             
             <tbody>
-                @foreach($billEntries AS $key => $entry)
+                @foreach($bill->entries AS $key => $entry)
                     <tr>
                         <td>{{$key}}</td>
                         <td></td>
