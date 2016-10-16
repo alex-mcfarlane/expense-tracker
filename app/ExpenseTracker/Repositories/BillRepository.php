@@ -20,7 +20,7 @@ class BillRepository {
 
     public function get($id)
     {
-        return $this->bill->find($id);
+        return $this->bill->with('entries')->find($id);
     }
     
     public function create($input)

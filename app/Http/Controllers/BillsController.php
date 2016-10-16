@@ -32,10 +32,8 @@ class BillsController extends BaseController
 
     public function view($id)
     {
-        $bill = $this->billRepo->get($id);
-        $data = [
-            'bill' => $bill
-        ];
+        $data = $this->billGateway->get($id);
+
         return view('bills.view', $data);
     }
 

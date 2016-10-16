@@ -24,4 +24,15 @@ class BillGateway {
 
         return $listener->returnItem($bill);
     }
+
+    public function get($id)
+    {
+        $bill = $this->billRepo->get($id);
+        $entries = $bill->entries;
+
+        return [
+            'bill' => $bill,
+            'entries' => $entries
+        ];
+    }
 }

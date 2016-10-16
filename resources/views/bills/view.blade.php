@@ -25,9 +25,9 @@
             </thead>
             
             <tbody>
-                @foreach($bill->entries AS $key => $entry)
+                @foreach($entries AS $key => $entry)
                     <tr>
-                        <td>{{$key}}</td>
+                        <td>{{$key+1}}</td>
                         <td></td>
                         <td></td>
                         <td></td>
