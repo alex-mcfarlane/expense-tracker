@@ -24,4 +24,7 @@ Route::group(['middleware'=>'auth'], function() {
 	Route::get('bills/view/{id}', 'BillsController@view');
 	Route::get('/bills/create', 'BillsController@create');
     Route::post('/bills', 'BillsController@store');
+
+    Route::get("/bills/{billId}/entries/create", "BillEntryController@create");
+    Route::post("/bills/{billId}/entries", "BillEntryController@store");
 });

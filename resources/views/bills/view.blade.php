@@ -5,7 +5,7 @@
         <div class="col-lg-12">
             <div class="pull-right">
                 <a href="{{URL::to('bills')}}" class="btn btn-primary">All Bills</a>
-                <a href="{{URL::to('bills')}}" class="btn btn-primary">Add Entry</a>
+                <a href="{{URL::to('bills/'.$bill->id.'/entries/create')}}" class="btn btn-primary">Add Entry</a>
             </div>
         </div>
     </div>
@@ -16,10 +16,10 @@
             <thead>
                 <tr>
                     <th>Entry #</th>
-                    <th>Date</th>
+                    <th>Due Date</th>
                     <th>Amount</th>
+                    <th>Balance</th>
                     <th>Amount Paid</th>
-                    <th>Amount Owing</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -28,10 +28,10 @@
                 @foreach($entries AS $key => $entry)
                     <tr>
                         <td>{{$key+1}}</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>{{$entry->due_date}}</td>
+                        <td>{{$entry->amount}}</td>
+                        <td>{{$entry->balance}}</td>
+                        <td>{{$entry->paid}}</td>
                         <td></td>
                     </tr>
                 @endforeach

@@ -24,7 +24,7 @@
             <tbody>
                 @foreach($bills AS $bill)
                     <tr>
-                        <td>{{$bill->name}}</td>
+                        <td><a href="{{URL::to('bills/view/'.$bill->id)}}">{{$bill->name}}</a></td>
                         <td></td>
                         <td></td>
                         <td></td>
