@@ -50,7 +50,9 @@ class BillEntryGateway {
     {
         $validator = Validator::make($input, [
             'due_datae' => 'date',
-            'amount' => 'required|min:0',
+            'amount' => 'required|numeric|min:0',
+            'balance' => 'numeric|min:0',
+            'paid' => 'numeric|min:0',
         ]);
 
         if($validator->fails()) {
