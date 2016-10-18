@@ -16,7 +16,7 @@ class BillGateway {
     public function create($listener, $input)
     {
         if(! $bill = $this->billRepo->create($input)) {
-            return $listener->returnWithError('Unable to save bill');
+            return $listener->returnWithErrors(['Unable to save bill']);
         }
 
         $bill->user()->associate(Auth::user());

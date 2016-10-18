@@ -4,10 +4,12 @@ namespace App\ExpenseTracker\Gateways;
 use App\ExpenseTracker\Repositories\BillEntryRepository;
 use App\ExpenseTracker\Repositories\BillRepository;
 use Auth;
+use Validator;
 
 class BillEntryGateway {
     protected $billEntryRepo;
     protected $billRepo;
+    protected $errors;
     
     public function __construct(BillEntryRepository $billEntryRepository, BillRepository $billRepository)
     {
@@ -17,10 +19,14 @@ class BillEntryGateway {
     
     public function create($listener, $billId, $input)
     {
+        if(!$this->validate($input)) {
+            return $listener->returnWithErrors($this->errors);
+        }
+
         $bill = $this->billRepo->get($billId);
 
         if(! $entry = $this->billEntryRepo->create($input)) {
-            return $listener->returnWithError('Unable to save bill');
+            return $listener->returnWithErrors(['Unable to save bill']);
         }
 
         $entry->bill()->associate($bill);
@@ -38,5 +44,20 @@ class BillEntryGateway {
             'bill' => $bill,
             'entries' => $entries
         ];
+    }
+
+    private function validate($input)
+    {
+        $validator = Validator::make($input, [
+            'due_datae' => 'date',
+            'amount' => 'required|min:0',
+        ]);
+
+        if($validator->fails()) {
+            $this->errors = $validator->errors();
+            return false;
+        }
+
+        return true;
     }
 }

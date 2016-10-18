@@ -20,8 +20,13 @@ class BaseController extends Controller
     	return redirect()->to($this->parentEntity."/view/".$parentId);
     }
     
-    public function returnWithError($error)
+    public function returnWithErrors($errorsArr)
     {
-        return view();
+        return redirect()->back()->withErrors($errorsArr)->withInput();
+    }
+
+    public function returnWithErrorsAndInput($errorsArr, $input)
+    {
+        return redirect()->back()->withErrors($errorsArr)->withInput($input);
     }
 }
