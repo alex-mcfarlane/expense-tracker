@@ -18,6 +18,8 @@ class BillEntryGateway extends BaseGateway{
     
     public function create($listener, $billId, $input)
     {
+        $input['due_date'] = (string) $input['due_date'];
+        
         if(!$this->validate($input)) {
             return $listener->returnWithErrors($this->errors);
         }
@@ -48,7 +50,7 @@ class BillEntryGateway extends BaseGateway{
     private function validate(array $input)
     {
         $validator = Validator::make($input, [
-            'due_datae' => 'date',
+            'due_date' => 'date',
             'amount' => 'required|numeric|min:0',
             'balance' => 'numeric|min:0',
             'paid' => 'numeric|min:0',

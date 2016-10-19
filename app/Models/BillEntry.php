@@ -7,7 +7,7 @@ use Auth;
 
 class BillEntry extends Model
 {
-    protected $fillable = ['due_Date', 'amount', 'balance', 'paid'];
+    protected $fillable = ['due_date', 'amount', 'balance', 'paid'];
 
     public function bill()
     {

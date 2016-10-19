@@ -28,7 +28,7 @@
                     <label for="due_date" class="col-md-3 control-label">Due Date</label>
                     
                     <div class="col-md-9 col-sm-12">
-                        <input type="text" class="form-control" id="due_date" name="due_date"/>
+                        {{Form::date('due_date', \Carbon\Carbon::now())}}
                     </div>
                 </div>
 
