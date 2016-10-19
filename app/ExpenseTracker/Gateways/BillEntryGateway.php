@@ -6,10 +6,9 @@ use App\ExpenseTracker\Repositories\BillRepository;
 use Auth;
 use Validator;
 
-class BillEntryGateway {
+class BillEntryGateway extends BaseGateway{
     protected $billEntryRepo;
     protected $billRepo;
-    protected $errors;
     
     public function __construct(BillEntryRepository $billEntryRepository, BillRepository $billRepository)
     {
@@ -46,7 +45,7 @@ class BillEntryGateway {
         ];
     }
 
-    private function validate($input)
+    private function validate(array $input)
     {
         $validator = Validator::make($input, [
             'due_datae' => 'date',

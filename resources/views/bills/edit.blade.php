@@ -11,6 +11,15 @@
 
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
+
+            @if(count($errors->all()) > 0)
+                <div class="alert alert-danger">
+                    @foreach($errors->all() as $error)
+                        {{$error}}
+                    @endforeach
+                </div>
+            @endif
+            
             <form class="form-horizontal" method="POST" action="{{URL::to('bills')}}">
                 
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
