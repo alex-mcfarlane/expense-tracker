@@ -10,6 +10,8 @@
         </div>
     </div>
 
+    <h2>{{$bill->name}} Bill's</h2>
+
     <div class="table-responsive">
         <table class="table">
             
