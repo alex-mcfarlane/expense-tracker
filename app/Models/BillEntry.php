@@ -7,7 +7,8 @@ use Auth;
 
 class BillEntry extends Model
 {
-    protected $fillable = ['due_date', 'amount', 'balance', 'paid'];
+    protected $fillable = ['due_date', 'amount', 'paid'];
+    protected $appends = array('balance');
 
     public function bill()
     {
@@ -17,5 +18,15 @@ class BillEntry extends Model
     public function scopeForBill($query, $billId)
     {
     	$query->where('bill_id', $bill);
+    }
+
+    public function getBalanceAttribute()
+    {
+    	return $this->calcBalance();
+    }
+    public function calcBalance()
+    {
+		$balance = $this->amount - $this->paid;
+		return $balance;
     }
 }

@@ -27,4 +27,6 @@ Route::group(['middleware'=>'auth'], function() {
 
     Route::get("/bills/{billId}/entries/create", "BillEntryController@create");
     Route::post("/bills/{billId}/entries", "BillEntryController@store");
+
+    Route::get("/billEntries/{id}/pay", "BillEntryController@getPay");
 });

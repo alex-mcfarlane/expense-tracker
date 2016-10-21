@@ -7,6 +7,7 @@ use App\Http\Requests;
 use App\ExpenseTracker\Gateways\BillGateway;
 use App\ExpenseTracker\Gateways\BillEntryGateway;
 use App\ExpenseTracker\Repositories\BillRepository;
+use App\ExpenseTracker\Repositories\BillEntryRepository;
 
 class BillEntryController extends BaseController
 {
@@ -14,11 +15,13 @@ class BillEntryController extends BaseController
 	protected $billRepo;
 	protected $parentEntity = 'bills';
 
-	public function __construct(BillGateway $billGateway, BillEntryGateway $billEntryGateway, BillRepository $billRepository)
+	public function __construct(BillGateway $billGateway, BillEntryGateway $billEntryGateway, BillRepository $billRepository, 
+        BillEntryRepository $billEntryRepository)
 	{
 		$this->billGateway = $billGateway;
 		$this->billEntryGateway = $billEntryGateway;
 		$this->billRepo = $billRepository;
+        $this->billEntryRepo = $billEntryRepository;
 	}
 
     public function create($billId)
@@ -36,5 +39,19 @@ class BillEntryController extends BaseController
     {
     	$data = $request->input();
     	return $this->billEntryGateway->create($this, $billId, $data);
+    }
+
+    public function getPay($id)
+    {
+        if(! $entry = $this->billEntryGateway->get($id))
+        {
+            return $this->returnWithErrors(['Bill entry not found']);
+        }
+
+        $data = [
+            'entry' => $entry
+        ];
+
+        return view('billEntries.pay', $data);
     }
 }

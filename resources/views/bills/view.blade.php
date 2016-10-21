@@ -34,7 +34,9 @@
                         <td>{{$entry->amount}}</td>
                         <td>{{$entry->balance}}</td>
                         <td>{{$entry->paid}}</td>
-                        <td></td>
+                        <td>
+                            <a href="{{URL::to('billEntries/'.$entry->id.'/pay')}}" class="btn btn-sm btn-primary">Pay Bill<a>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

@@ -38,13 +38,9 @@ class BillEntryGateway extends BaseGateway{
 
     public function get($id)
     {
-        $bill = $this->billRepo->get($id);
-        $entries = $bill->entries;
+        $entry = $this->billEntryRepo->get($id);
 
-        return [
-            'bill' => $bill,
-            'entries' => $entries
-        ];
+        return $entry;
     }
 
     private function validate(array $input)
