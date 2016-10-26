@@ -29,4 +29,9 @@ class BillEntry extends Model
 		$balance = $this->amount - $this->paid;
 		return $balance;
     }
+
+    public function pay($amount)
+    {
+    	$this->paid += $amount;
+    }
 }

@@ -20,9 +20,11 @@
                 </div>
             @endif
 
-            <form class="form-horizontal" method="POST" action="{{URL::to('billsEntries/'.$entry->id)}}">
+            <form class="form-horizontal" method="POST" action="{{URL::to('billEntries/'.$entry->id)}}">
                 
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+                <input name="_method" type="hidden" value="PATCH">
                 
                 <div class="form-group">
                     <label for="due_date" class="col-md-3 control-label">Due Date</label>

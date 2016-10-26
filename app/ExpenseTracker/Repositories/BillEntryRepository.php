@@ -5,6 +5,7 @@ use App\Models\BillEntry;
 
 class BillEntryRepository {
     protected $billEntry;
+    protected $error;
     
     public function __construct(BillEntry $billEntry)
     {
@@ -28,5 +29,27 @@ class BillEntryRepository {
         $billEntry = $this->billEntry->create($input);
         
         return $billEntry;
+    }
+
+    public function update($billEntry, array $data = null)
+    {
+        $billEntry->fill($data);
+
+        if(! $this->save($billEntry)) {
+            $this->error = ('Unable to save bill entry.');
+            return false;
+        }
+
+        return $billEntry;
+    }
+
+    public function save($model)
+    {
+        return $model->save();
+    }
+
+    public function getError()
+    {
+        return $this->error;
     }
 }

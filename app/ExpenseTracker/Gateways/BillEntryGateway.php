@@ -16,6 +16,13 @@ class BillEntryGateway extends BaseGateway{
         $this->billRepo = $billRepository;
     }
     
+    public function get($id)
+    {
+        $entry = $this->billEntryRepo->get($id);
+
+        return $entry;
+    }
+
     public function create($listener, $billId, $input)
     {
         $input['due_date'] = (string) $input['due_date'];
@@ -36,11 +43,35 @@ class BillEntryGateway extends BaseGateway{
         return $listener->returnParentItem($entry->bill_id);
     }
 
-    public function get($id)
+    public function update($listener, $id, $data)
     {
-        $entry = $this->billEntryRepo->get($id);
+        if(! $entry = $this->get($id)) {
+            return $listener->returnWithErrors(['Bill entry not found']);
+        }
 
-        return $entry;
+        if(!$entry = $this->billEntryRepo->update($entry, $data)) {
+            return $listener->returnWithErrors([$this->billEntryRepo->getError()]);
+        }
+
+        return $listener->returnParentItem($entry->bill_id);
+        
+    }
+
+    public function partialUpdate($listener, $id, $data)
+    {
+        if(! $entry = $this->billEntryRepo->get($id)) {
+            return $listener->returnWithErrors(['Bill entry not found']);
+        }
+
+        if(isset($data['payment'])) {
+            $entry->pay($data['payment']);
+        }
+
+        if(! $this->billEntryRepo->save($entry)) {
+            return $listener->returnWithErrors([$this->billEntryRepo->getError()]);
+        }
+
+        return $listener->returnParentItem($entry->bill_id);
     }
 
     private function validate(array $input)

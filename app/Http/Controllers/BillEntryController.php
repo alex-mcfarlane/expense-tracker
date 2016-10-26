@@ -41,6 +41,20 @@ class BillEntryController extends BaseController
     	return $this->billEntryGateway->create($this, $billId, $data);
     }
 
+    public function update(Request $request, $id)
+    {
+        $data = $request->all();
+
+        return $this->billEntryGateway->update($this, $id, $data);
+    }
+
+    public function partialUpdate(Request $request, $id)
+    {
+        $data = $request->all();
+
+        return $this->billEntryGateway->partialUpdate($this, $id, $data);
+    }
+
     public function getPay($id)
     {
         if(! $entry = $this->billEntryGateway->get($id))

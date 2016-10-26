@@ -29,4 +29,6 @@ Route::group(['middleware'=>'auth'], function() {
     Route::post("/bills/{billId}/entries", "BillEntryController@store");
 
     Route::get("/billEntries/{id}/pay", "BillEntryController@getPay");
+    Route::put("/billEntries/{id}", "BillEntryController@update");
+    Route::patch("/billEntries/{id}", "BillEntryController@partialUpdate");
 });
