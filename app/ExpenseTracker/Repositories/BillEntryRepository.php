@@ -33,8 +33,6 @@ class BillEntryRepository {
 
     public function update($billEntry, array $data = null)
     {
-        $billEntry->fill($data);
-
         if(! $this->save($billEntry)) {
             $this->error = ('Unable to save bill entry.');
             return false;

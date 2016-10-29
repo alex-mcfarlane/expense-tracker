@@ -49,7 +49,9 @@ class BillEntryGateway extends BaseGateway{
             return $listener->returnWithErrors(['Bill entry not found']);
         }
 
-        if(!$entry = $this->billEntryRepo->update($entry, $data)) {
+        $billEntry->fill($data);
+
+        if(!$entry = $this->billEntryRepo->update($entry)) {
             return $listener->returnWithErrors([$this->billEntryRepo->getError()]);
         }
 
@@ -64,12 +66,13 @@ class BillEntryGateway extends BaseGateway{
         }
 
         if(isset($data['payment'])) {
-            $entry->pay($data['payment']);
+            if(! $entry->pay($data['payment'])) {
+                return $listener->returnWithErrors(['Amount exceeds remaining balance']);
+            }
         }
 
-        if(! $this->billEntryRepo->save($entry)) {
-            return $listener->returnWithErrors([$this->billEntryRepo->getError()]);
-        }
+        //TODO partial update of other fields
+        $this->billEntryRepo->save($entry);
 
         return $listener->returnParentItem($entry->bill_id);
     }

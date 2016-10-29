@@ -32,6 +32,19 @@ class BillEntry extends Model
 
     public function pay($amount)
     {
+    	if(! $this->validatePayment($amount)) {
+    		return false;
+    	}
+
     	$this->paid += $amount;
+    	return true;
+    }
+
+    private function validatePayment($amount)
+    {
+  		error_log($amount);
+  		error_log($this->balance);
+  		error_log($amount < $this->balance);
+    	return $amount < $this->balance;
     }
 }
