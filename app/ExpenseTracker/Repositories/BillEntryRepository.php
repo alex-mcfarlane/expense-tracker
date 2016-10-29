@@ -31,13 +31,11 @@ class BillEntryRepository {
         return $billEntry;
     }
 
-    public function update($billEntry, array $data = null)
+    public function update($billEntry, array $data)
     {
-        if(! $this->save($billEntry)) {
-            $this->error = ('Unable to save bill entry.');
-            return false;
-        }
-
+        $billEntry->fill($data);
+        $this->save($billEntry);
+        
         return $billEntry;
     }
 

@@ -24,6 +24,7 @@ class BillEntry extends Model
     {
     	return $this->calcBalance();
     }
+    
     public function calcBalance()
     {
 		$balance = $this->amount - $this->paid;
@@ -42,9 +43,6 @@ class BillEntry extends Model
 
     private function validatePayment($amount)
     {
-  		error_log($amount);
-  		error_log($this->balance);
-  		error_log($amount < $this->balance);
     	return $amount < $this->balance;
     }
 }

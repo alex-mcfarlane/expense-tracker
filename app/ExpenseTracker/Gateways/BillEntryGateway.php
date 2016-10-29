@@ -49,9 +49,7 @@ class BillEntryGateway extends BaseGateway{
             return $listener->returnWithErrors(['Bill entry not found']);
         }
 
-        $billEntry->fill($data);
-
-        if(!$entry = $this->billEntryRepo->update($entry)) {
+        if(!$entry = $this->billEntryRepo->update($entry, $data)) {
             return $listener->returnWithErrors([$this->billEntryRepo->getError()]);
         }
 
@@ -79,6 +77,8 @@ class BillEntryGateway extends BaseGateway{
 
     private function validate(array $input)
     {
+        $isValid = true;
+
         $validator = Validator::make($input, [
             'due_date' => 'date',
             'amount' => 'required|numeric|min:0',
@@ -88,9 +88,13 @@ class BillEntryGateway extends BaseGateway{
 
         if($validator->fails()) {
             $this->errors = $validator->errors();
-            return false;
+            $isValid = false;
+        }
+        else if($input['paid'] > $input['amount']) {
+            $this->errors[] = 'Payment amount exceeds remaining balance.';
+            $isValid = false;
         }
 
-        return true;
+        return $isValid;
     }
 }
