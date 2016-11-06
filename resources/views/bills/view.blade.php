@@ -35,9 +35,40 @@
                         <td>{{$entry->balance}}</td>
                         <td>{{$entry->paid}}</td>
                         <td>
-                            <a href="{{URL::to('billEntries/'.$entry->id.'/pay')}}" class="btn btn-sm btn-primary">Pay Bill<a>
+                            <a href="{{URL::to('billEntries/'.$entry->id.'/pay')}}" class="btn btn-sm btn-primary" >Make Payment<a>
+                            <a href="" class="btn btn-sm btn-success"
+                                data-toggle="modal" data-target="#payment-modal">Pay In Full<a>
                         </td>
                     </tr>
+
+                    <div id="payment-modal" class="modal fade" role="dialog">
+                      <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Pay Full Bill</h4>
+                          </div>
+
+                          <div class="modal-body">
+                            <h4>Are you sure you want to pay the bill in full?</h4>
+                          </div>
+
+                          <div class="modal-footer">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+                            <a id="pay-bill" class="btn btn-primary" href="{{URL::to('billEntries/'.$entry->id)}}">Pay</a>
+
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          </div>
+
+                        </div>
+
+                      </div>
+                    </div>
+
                 @endforeach
             </tbody>
         </table>
