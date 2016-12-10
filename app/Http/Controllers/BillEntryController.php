@@ -51,7 +51,6 @@ class BillEntryController extends BaseController
     public function partialUpdate(Request $request, $id)
     {
         $data = $request->all();
-
         return $this->billEntryGateway->partialUpdate($this, $id, $data);
     }
 

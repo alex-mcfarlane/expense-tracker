@@ -41,8 +41,13 @@ class BillEntry extends Model
     	return true;
     }
 
+    public function payFull()
+    {
+        $this->pay($this->balance);
+    }
+
     private function validatePayment($amount)
     {
-    	return $amount < $this->balance;
+    	return $amount <= $this->balance;
     }
 }

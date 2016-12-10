@@ -35,7 +35,7 @@
                         <td>{{$entry->balance}}</td>
                         <td>{{$entry->paid}}</td>
                         <td>
-                            <a href="{{URL::to('billEntries/'.$entry->id.'/pay')}}" class="btn btn-sm btn-primary" >Make Payment<a>
+                            <a href="{{URL::to('billEntries/'.$entry->id.'/pay')}}" class="btn btn-sm btn-primary">Make Payment<a>
                             <a href="" class="btn btn-sm btn-success"
                                 data-toggle="modal" data-target="#payment-modal">Pay In Full<a>
                         </td>
@@ -57,9 +57,13 @@
                           </div>
 
                           <div class="modal-footer">
-                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="_token" value=>
 
-                            <a id="pay-bill" class="btn btn-primary" href="{{URL::to('billEntries/'.$entry->id)}}">Pay</a>
+                            <a id="pay-bill" class="btn btn-primary" href="{{URL::to('billEntries/'.$entry->id)}}"
+                                data-token="{{ csrf_token() }}" data-base-url="{{URL::to('billEntries/')}}" 
+                                data-entry-id="{{$entry->id}}">
+                                Pay
+                            </a>
 
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                           </div>

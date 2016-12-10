@@ -29,4 +29,9 @@ class BaseController extends Controller
     {
         return redirect()->back()->withErrors($errorsArr)->withInput($input);
     }
+
+    public function returnJSON($data)
+    {
+        return response()->json($data);
+    }
 }

@@ -1,12 +1,20 @@
 $(document).ready(function(){
+
 	$('#pay-bill').click(function(e){
 		e.preventDefault();
+		
 		var url = $(this).attr('href');
+		var csrfToken = $(this).data('token');
 
 		$.ajax({
 			url: url,
-			method: "POST",
-			contentType: "application/json; charset=utf-8",
+			method: "PATCH",
+			headers: {
+				'X-CSRF-TOKEN': csrfToken
+			},
+			data: {
+				pay: true
+			},
 			success: function(data) {
 				console.log(data);
 			},

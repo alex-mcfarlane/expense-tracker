@@ -5,6 +5,7 @@ use App\ExpenseTracker\Repositories\BillEntryRepository;
 use App\ExpenseTracker\Repositories\BillRepository;
 use Auth;
 use Validator;
+use Request;
 
 class BillEntryGateway extends BaseGateway{
     protected $billEntryRepo;
@@ -64,15 +65,27 @@ class BillEntryGateway extends BaseGateway{
         }
 
         if(isset($data['payment'])) {
+            //make an explicit payment
             if(! $entry->pay($data['payment'])) {
                 return $listener->returnWithErrors(['Amount exceeds remaining balance']);
             }
         }
 
+        if(isset($data['pay']) && $data['pay'] == true) {
+            //pay bill in full
+            $entry->payFull();
+        }
+
         //TODO partial update of other fields
         $this->billEntryRepo->save($entry);
 
-        return $listener->returnParentItem($entry->bill_id);
+        if(Request::ajax())
+        {
+            return $listener->returnJSON($entry);
+        }
+        else{
+            return $listener->returnParentItem($entry->bill_id);
+        }
     }
 
     private function validate(array $input)
