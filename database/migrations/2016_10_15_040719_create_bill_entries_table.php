@@ -16,7 +16,6 @@ class CreateBillEntriesTable extends Migration
             $table->increments('id');
             $table->integer('bill_id');
             $table->decimal('amount', 10, 2);
-            $table->decimal('balance', 10, 2);
             $table->decimal('paid', 10, 2);
             $table->date('due_date');
             $table->timestamps();
@@ -30,6 +29,6 @@ class CreateBillEntriesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('billEntries');
+        Schema::drop('bill_entries');
     }
 }
