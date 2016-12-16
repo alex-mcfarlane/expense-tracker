@@ -44,6 +44,11 @@ class BillEntryRepository {
         return $model->save();
     }
 
+    public function delete($id)
+    {
+        return $this->billEntry->destroy($id);
+    }
+
     public function getError()
     {
         return $this->error;

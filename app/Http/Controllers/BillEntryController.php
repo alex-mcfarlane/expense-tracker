@@ -67,4 +67,9 @@ class BillEntryController extends BaseController
 
         return view('billEntries.pay', $data);
     }
+
+    public function destroy($id)
+    {
+        $this->billEntryRepo->delete($id);
+    }
 }

@@ -35,9 +35,17 @@
                         <td class="balance">{{$entry->balance}}</td>
                         <td class="paid">{{$entry->paid}}</td>
                         <td>
-                            <a href="{{URL::to('billEntries/'.$entry->id.'/pay')}}" class="btn btn-sm btn-primary">Make Payment<a>
                             <a href="" class="btn btn-sm btn-success"
-                                data-toggle="modal" data-target="#payment-modal-{{$entry->id}}">Pay In Full<a>
+                                data-toggle="modal" data-target="#payment-modal-{{$entry->id}}">
+                                Pay In Full
+                            <a>
+                            <a href="{{URL::to('billEntries/'.$entry->id.'/pay')}}" class="btn btn-sm btn-primary">
+                                Make Payment
+                            <a>
+                            <a href="" class="btn btn-sm btn-danger" 
+                                data-toggle="modal" data-target="#delete-modal-{{$entry->id}}">
+                                <i class="fa fa-trash icon-white"></i>
+                            </a>
                         </td>
                     </tr>
 
@@ -66,6 +74,38 @@
                             </a>
 
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          </div>
+
+                        </div>
+
+                      </div>
+                    </div>
+
+                    <div id="delete-modal-{{$entry->id}}" class="modal fade" role="dialog">
+                      <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Delete Bill</h4>
+                          </div>
+
+                          <div class="modal-body">
+                            <h4>Are you sure you want to delete this bill?</h4>
+                          </div>
+
+                          <div class="modal-footer">
+                            <input type="hidden" name="_token" value=>
+
+                            <a class="btn btn-primary delete-bill" href="{{URL::to('billEntries/'.$entry->id)}}"
+                                data-token="{{ csrf_token() }}" data-base-url="{{URL::to('billEntries/')}}" 
+                                data-entry-id="{{$entry->id}}">
+                                Yes
+                            </a>
+
+                            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
                           </div>
 
                         </div>
