@@ -20,10 +20,11 @@
                 </div>
             @endif
 
-            <form class="form-horizontal" method="POST" action="{{URL::to('bills/'.$bill->id.'/entries')}}">
+            <form class="form-horizontal" method="POST" action="{{URL::to('billEntries/'.$entry->id)}}">
                 
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                
+                <input type="hidden" name="_method" value="PUT">
+
                 <div class="form-group">
                     <label for="due_date" class="col-md-3 control-label">Due Date</label>
                     
@@ -36,7 +37,8 @@
                     <label for="amount" class="col-md-3 control-label">Amount</label>
                     
                     <div class="col-md-9 col-sm-12">
-                        <input type="text" class="form-control" id="amount" name="amount"/>
+                        <input type="text" class="form-control" id="amount" name="amount" 
+                            value="{{Input::old('amount', $entry->amount)}}"/>
                     </div>
                 </div>
 
@@ -44,7 +46,8 @@
                     <label for="paid" class="col-md-3 control-label">Amount Paid</label>
                     
                     <div class="col-md-9 col-sm-12">
-                        <input type="text" class="form-control" id="paid" name="paid"/>
+                        <input type="text" class="form-control" id="paid" name="paid"
+                            value="{{Input::old('paid', $entry->paid)}}"/>
                     </div>
                 </div>
                 

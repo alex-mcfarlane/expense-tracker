@@ -10,7 +10,6 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-
 Route::get('/', 'HomeController@index');
 
 Route::auth();
@@ -26,6 +25,7 @@ Route::group(['middleware'=>'auth'], function() {
     Route::get("/bills/{billId}/entries/create", "BillEntryController@create");
     Route::post("/bills/{billId}/entries", "BillEntryController@store");
 
+    Route::get("/billEntries/{id}/edit", "BillEntryController@edit");
     Route::get("/billEntries/{id}/pay", "BillEntryController@getPay");
     Route::put("/billEntries/{id}", "BillEntryController@update");
     Route::patch("/billEntries/{id}", "BillEntryController@partialUpdate");

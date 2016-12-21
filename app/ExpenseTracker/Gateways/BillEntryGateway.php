@@ -44,18 +44,9 @@ class BillEntryGateway extends BaseGateway{
         return $listener->returnParentItem($entry->bill_id);
     }
 
-    public function update($listener, $id, $data)
+    public function update($id, $data)
     {
-        if(! $entry = $this->get($id)) {
-            return $listener->returnWithErrors(['Bill entry not found']);
-        }
-
-        if(!$entry = $this->billEntryRepo->update($entry, $data)) {
-            return $listener->returnWithErrors([$this->billEntryRepo->getError()]);
-        }
-
-        return $listener->returnParentItem($entry->bill_id);
-        
+        return $this->billEntryRepo->update($entry->id, $data);
     }
 
     public function partialUpdate($listener, $id, $data)

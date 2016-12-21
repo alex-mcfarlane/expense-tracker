@@ -31,12 +31,9 @@ class BillEntryRepository {
         return $billEntry;
     }
 
-    public function update($billEntry, array $data)
+    public function update($id, array $data)
     {
-        $billEntry->fill($data);
-        $this->save($billEntry);
-        
-        return $billEntry;
+        return $this->billEntry->where("id", $id)->update($data);
     }
 
     public function save($model)

@@ -24,4 +24,10 @@ class BillEntryTest extends TestCase
 
         $this->assertEquals(0, $bill->entries()->count());
 	}
+
+	/** @test */
+	function can_edit_a_bill_entry()
+	{
+		
+	}
 }

@@ -4,24 +4,29 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
+
+use App\ExpenseTracker\Entry\EntryDisplay;
 use App\ExpenseTracker\Gateways\BillGateway;
 use App\ExpenseTracker\Gateways\BillEntryGateway;
 use App\ExpenseTracker\Repositories\BillRepository;
 use App\ExpenseTracker\Repositories\BillEntryRepository;
+use App\ExpenseTracker\Services\EntryEditorService;
 
 class BillEntryController extends BaseController
 {
 	protected $billGateway;
 	protected $billRepo;
+    protected $entryEditorService;
 	protected $parentEntity = 'bills';
 
 	public function __construct(BillGateway $billGateway, BillEntryGateway $billEntryGateway, BillRepository $billRepository, 
-        BillEntryRepository $billEntryRepository)
+        BillEntryRepository $billEntryRepository, EntryEditorService $entryEditorService)
 	{
 		$this->billGateway = $billGateway;
 		$this->billEntryGateway = $billEntryGateway;
 		$this->billRepo = $billRepository;
         $this->billEntryRepo = $billEntryRepository;
+        $this->entryEditorService = $entryEditorService;
 	}
 
     public function create($billId)
@@ -41,11 +46,22 @@ class BillEntryController extends BaseController
     	return $this->billEntryGateway->create($this, $billId, $data);
     }
 
+    public function edit($id, EntryDisplay $entryDisplay)
+    {
+        return view('billEntries.edit', $entryDisplay->make($id));
+    }
+
     public function update(Request $request, $id)
     {
-        $data = $request->all();
+        $data = $request->only('amount', 'paid');
 
-        return $this->billEntryGateway->update($this, $id, $data);
+        try{
+            $entry = $this->entryEditorService->update($id, $data);
+        } catch(\App\ExpenseTracker\Exceptions\EntryNotFoundException $e){
+            return $this->returnWithErrors([$e->getErrors()]);
+        }
+
+        return $this->returnParentItem($entry->bill_id);
     }
 
     public function partialUpdate(Request $request, $id)

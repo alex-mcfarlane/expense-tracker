@@ -205,6 +205,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Form' => 'Collective\Html\FormFacade',
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        'Input' => Illuminate\Support\Facades\Input::class,
 
     ],
 
