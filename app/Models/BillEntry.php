@@ -14,8 +14,10 @@ class BillEntry extends Model
     public static function fromForm(array $attributes)
     {
         $entry = new static;
-        
         $entry->fill($attributes);
+        
+        return $entry;
+        
     }
     
     public function bill()
@@ -57,15 +59,15 @@ class BillEntry extends Model
     public function isValid()
     {
         $errors = [];
-        
+
         if($this->paid > $this->amount) {
-            $errors[] = "Amount paid cannot be greater than total bill amount";
+            $errors[] = "Amount paid cannot be greater than total bill amount.";
         }
-        else if($this->amount <= $this->balance) {
-            $errors[] = "Error message WIP";
+        else if($this->amount > $this->balance) {
+            $errors[] = "Amount paid cannot be greater than the balance owing.";
         }
         
-        if($errors->count() > 0) {
+        if(count($errors) > 0) {
             throw new ValidationException('Invalid model', $errors);   
         }
         return true;
