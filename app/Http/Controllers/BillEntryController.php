@@ -10,9 +10,8 @@ use App\ExpenseTracker\Gateways\BillGateway;
 use App\ExpenseTracker\Gateways\BillEntryGateway;
 use App\ExpenseTracker\Repositories\BillRepository;
 use App\ExpenseTracker\Repositories\BillEntryRepository;
+use App\ExpenseTracker\Services\EntryCreatorService;
 use App\ExpenseTracker\Services\EntryEditorService;
-use App\ExpenseTracker\Validators\EntryValidator;
-use App\Models\BillEntry as Entry;
 
 class BillEntryController extends BaseController
 {
@@ -22,7 +21,7 @@ class BillEntryController extends BaseController
 	protected $parentEntity = 'bills';
 
 	public function __construct(BillGateway $billGateway, BillEntryGateway $billEntryGateway, BillRepository $billRepository, 
-        BillEntryRepository $billEntryRepository, EntryEditorService $entryEditorService, EntryValidator $validator)
+        BillEntryRepository $billEntryRepository, EntryEditorService $entryEditorService)
 	{
 		$this->billGateway = $billGateway;
 		$this->billEntryGateway = $billEntryGateway;
@@ -45,25 +44,16 @@ class BillEntryController extends BaseController
 
     public function store(Request $request, $billId)
     {
-        //user input validation
+        $entryCreator = new EntryCreator();
+        
         try{
-            $this->validator->isValid($request->only('due_date', 'amount', 'paid'));
-        } catch(\App\ExpenseTracker\Exceptions\ValidationException $e){
+            $entryCreator->make($request->only('due_date', 'amount', 'paid'));
+        } catch(\App\ExpenseTracker\Exceptions\ValidationException $e) {
             return $this->returnWithErrors($e->getErrors());
-        }
-        
-        //try to retrieve bill object
-        $bill = $this->billRepo->get($billId);
-        
-        $entry = Entry::fromForm($request->only('due_date', 'amount', 'paid'));
-        try{
-            $entry->isValid();
         }
         catch(\App\ExpenseTracker\Exceptions\ValidationException $e){
             return $this->returnWithErrors([$e->getErrors()]);
         }
-        
-        $bill->addEntry($entry);
         
         return $this->returnparentItem($billId);
     }

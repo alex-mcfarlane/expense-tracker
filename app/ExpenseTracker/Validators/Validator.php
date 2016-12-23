@@ -13,7 +13,6 @@ abstract class Validator {
         
         if($v->fails()) {
             $this->errors = $v->messages();
-            throw new \App\ExpenseTracker\Exceptions\ValidationException('Invalid user input', $this->errors);
             return false;
         }
         
