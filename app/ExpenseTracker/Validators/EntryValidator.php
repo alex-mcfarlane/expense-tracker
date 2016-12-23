@@ -1,7 +1,7 @@
 <?php
 namespace App\ExpenseTracker\Validators;
 
-class EntryValidator
+class EntryValidator extends Validator
 {
 	protected static $rules = [
 		'due_date' => 'date',

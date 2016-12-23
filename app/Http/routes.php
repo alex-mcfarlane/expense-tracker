@@ -27,7 +27,7 @@ Route::group(['middleware'=>'auth'], function() {
 
     Route::get("/billEntries/{id}/edit", "BillEntryController@edit");
     Route::get("/billEntries/{id}/pay", "BillEntryController@getPay");
-    Route::put("/billEntries/{id}", "BillEntryController@update");
+    Route::put("/entries/{id}", "BillEntryController@update");
     Route::patch("/billEntries/{id}", "BillEntryController@partialUpdate");
     Route::delete("/billEntries/{id}", "BillEntryController@destroy");
 });

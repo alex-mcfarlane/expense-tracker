@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\ExpenseTracker\Exceptions\ValidationException;
 use Auth;
 
 class BillEntry extends Model
@@ -10,6 +11,13 @@ class BillEntry extends Model
     protected $fillable = ['due_date', 'amount', 'paid'];
     protected $appends = array('balance');
 
+    public static function fromForm(array $attributes)
+    {
+        $entry = new static;
+        
+        $entry->fill($attributes);
+    }
+    
     public function bill()
     {
     	return $this->belongsTo('App\Models\Bill');
@@ -46,8 +54,20 @@ class BillEntry extends Model
         $this->pay($this->balance);
     }
 
-    private function validatePayment($amount)
+    public function isValid()
     {
-    	return $amount <= $this->balance;
+        $errors = [];
+        
+        if($this->paid > $this->amount) {
+            $errors[] = "Amount paid cannot be greater than total bill amount";
+        }
+        else if($this->amount <= $this->balance) {
+            $errors[] = "Error message WIP";
+        }
+        
+        if($errors->count() > 0) {
+            throw new ValidationException('Invalid model', $errors);   
+        }
+        return true;
     }
 }

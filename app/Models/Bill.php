@@ -25,9 +25,9 @@ class Bill extends Model
         $query->where('user_id', $id);
     }
 
-    public function addEntry($amount, $paid, $dueDate)
+    public function addEntry(BillEntry $entry)
     {
-    	return $this->entries()->create(['amount' => $amount, 'paid' => $paid, 'due_date' => $dueDate]);
+    	return $this->entries()->save($entry);
     }
 
     public function getTotalBalanceAttribute()

@@ -11,6 +11,8 @@ use App\ExpenseTracker\Gateways\BillEntryGateway;
 use App\ExpenseTracker\Repositories\BillRepository;
 use App\ExpenseTracker\Repositories\BillEntryRepository;
 use App\ExpenseTracker\Services\EntryEditorService;
+use App\ExpenseTracker\Validators\EntryValidator;
+use App\Models\BillEntry as Entry;
 
 class BillEntryController extends BaseController
 {
@@ -20,13 +22,14 @@ class BillEntryController extends BaseController
 	protected $parentEntity = 'bills';
 
 	public function __construct(BillGateway $billGateway, BillEntryGateway $billEntryGateway, BillRepository $billRepository, 
-        BillEntryRepository $billEntryRepository, EntryEditorService $entryEditorService)
+        BillEntryRepository $billEntryRepository, EntryEditorService $entryEditorService, EntryValidator $validator)
 	{
 		$this->billGateway = $billGateway;
 		$this->billEntryGateway = $billEntryGateway;
 		$this->billRepo = $billRepository;
         $this->billEntryRepo = $billEntryRepository;
         $this->entryEditorService = $entryEditorService;
+        $this->validator = $validator;
 	}
 
     public function create($billId)
@@ -42,8 +45,27 @@ class BillEntryController extends BaseController
 
     public function store(Request $request, $billId)
     {
-    	$data = $request->input();
-    	return $this->billEntryGateway->create($this, $billId, $data);
+        //user input validation
+        try{
+            $this->validator->isValid($request->only('due_date', 'amount', 'paid'));
+        } catch(\App\ExpenseTracker\Exceptions\ValidationException $e){
+            return $this->returnWithErrors($e->getErrors());
+        }
+        
+        //try to retrieve bill object
+        $bill = $this->billRepo->get($billId);
+        
+        $entry = Entry::fromForm($request->only('due_date', 'amount', 'paid'));
+        try{
+            $entry->isValid();
+        }
+        catch(\App\ExpenseTracker\Exceptions\ValidationException $e){
+            return $this->returnWithErrors([$e->getErrors()]);
+        }
+        
+        $bill->addEntry($entry);
+        
+        return $this->returnparentItem($billId);
     }
 
     public function edit($id, EntryDisplay $entryDisplay)
