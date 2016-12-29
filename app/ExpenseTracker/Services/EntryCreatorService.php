@@ -15,7 +15,7 @@ class EntryCreatorService {
         $this->billRepo = $billRepository;
     }
     
-    public function make(array $attributes)
+    public function make($billID, array $attributes)
     {
         //user input validation
         if(! $this->validator->isValid($attributes)) {
@@ -23,14 +23,15 @@ class EntryCreatorService {
         }
         
         //try to retrieve bill object
-        $bill = $this->billRepo->get($billId);
+        $bill = $this->billRepo->get($billID);
         
-        $entry = Entry::fromForm($request->only('due_date', 'amount', 'paid'));
+        $entry = Entry::fromForm($attributes);
         try{
             $entry->isValid();
         }
         catch(\App\ExpenseTracker\Exceptions\ValidationException $e){
-            return $this->returnWithErrors([$e->getErrors()]);
+            throw $e;
+            return;
         }
         
         $bill->addEntry($entry);

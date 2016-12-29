@@ -21,14 +21,14 @@ class BillEntryController extends BaseController
 	protected $parentEntity = 'bills';
 
 	public function __construct(BillGateway $billGateway, BillEntryGateway $billEntryGateway, BillRepository $billRepository, 
-        BillEntryRepository $billEntryRepository, EntryEditorService $entryEditorService)
+        BillEntryRepository $billEntryRepository, EntryCreatorService $entryCreatorService, EntryEditorService $entryEditorService)
 	{
 		$this->billGateway = $billGateway;
 		$this->billEntryGateway = $billEntryGateway;
 		$this->billRepo = $billRepository;
         $this->billEntryRepo = $billEntryRepository;
+        $this->entryCreatorService = $entryCreatorService;
         $this->entryEditorService = $entryEditorService;
-        $this->validator = $validator;
 	}
 
     public function create($billId)
@@ -43,11 +43,9 @@ class BillEntryController extends BaseController
     }
 
     public function store(Request $request, $billId)
-    {
-        $entryCreator = new EntryCreator();
-        
+    {       
         try{
-            $entryCreator->make($request->only('due_date', 'amount', 'paid'));
+            $this->entryCreatorService->make($billId, $request->only('due_date', 'amount', 'paid'));
         } catch(\App\ExpenseTracker\Exceptions\ValidationException $e) {
             return $this->returnWithErrors($e->getErrors());
         }

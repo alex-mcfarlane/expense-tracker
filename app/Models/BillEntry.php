@@ -43,12 +43,7 @@ class BillEntry extends Model
 
     public function pay($amount)
     {
-    	if(! $this->validatePayment($amount)) {
-    		return false;
-    	}
-
     	$this->paid += $amount;
-    	return true;
     }
 
     public function payFull()
