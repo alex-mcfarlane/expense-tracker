@@ -69,6 +69,10 @@ class BillEntryController extends BaseController
             $entry = $this->entryEditorService->update($id, $data);
         } catch(\App\ExpenseTracker\Exceptions\EntryNotFoundException $e){
             return $this->returnWithErrors([$e->getErrors()]);
+        } catch(\App\ExpenseTracker\Exceptions\ValidationException $e) {
+            return $this->returnWithErrors($e->getErrors());
+        } catch(\App\ExpenseTracker\Exceptions\ValidationException $e) {
+            return $this->returnWithErrors($e->getErrors());
         }
 
         return $this->returnParentItem($entry->bill_id);

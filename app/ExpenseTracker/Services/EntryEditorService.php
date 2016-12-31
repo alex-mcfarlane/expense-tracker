@@ -19,10 +19,22 @@ class EntryEditorService{
 
     public function update($id, array $attributes)
     {
-    	$this->validator->make($attributes);
-
-    	if(!$entry = $this->billEntryRepo->get($id)) {
+        // does the entry exist?
+        if(!$entry = $this->billEntryRepo->get($id)) {
             throw new EntryNotFoundException('Entry not found', ['Entry not found with the given id of '.$id]);
+        }
+
+        // check if the user input is valid
+    	if(!$this->validator->isValid($attributes)) {
+            throw new \App\ExpenseTracker\Exceptions\ValidationException('Invalid user input', $this->validator->getErrors());
+        }
+
+        // ensure the model is in a valid state
+        try{
+            $entry->isValid();
+        }
+        catch(\App\ExpenseTracker\Exceptions\ValidationException $e){
+            throw $e;
         }
  
         $this->billEntryRepo->update($id, $attributes);
