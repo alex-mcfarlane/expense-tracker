@@ -18,6 +18,7 @@ class CreateBillEntriesTable extends Migration
             $table->decimal('amount', 10, 2);
             $table->decimal('paid', 10, 2);
             $table->date('due_date');
+            $table->boolean('closed');
             $table->timestamps();
         });
     }

@@ -14,6 +14,7 @@ class BillEntry extends Model
     public static function fromForm(array $attributes)
     {
         $entry = new static;
+        $entry->closed = false;
         $entry->fill($attributes);
         
         return $entry;
@@ -49,6 +50,10 @@ class BillEntry extends Model
         }
 
     	$this->paid += $payment;
+        
+        if($this->isPaid()) {
+            $this->markAsClosed();
+        }
     }
 
     public function payFull()
@@ -71,5 +76,15 @@ class BillEntry extends Model
             throw new ValidationException('Invalid model', $errors);   
         }
         return true;
+    }
+    
+    private function isPaid()
+    {
+        return $this->paid == $this->amount;
+    }
+    
+    private function markAsClosed()
+    {
+        $this->closed = true;
     }
 }
