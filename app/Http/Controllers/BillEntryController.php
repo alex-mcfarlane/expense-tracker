@@ -12,6 +12,7 @@ use App\ExpenseTracker\Repositories\BillRepository;
 use App\ExpenseTracker\Repositories\BillEntryRepository;
 use App\ExpenseTracker\Services\EntryCreatorService;
 use App\ExpenseTracker\Services\EntryEditorService;
+use App\ExpenseTracker\Factories\EntryPartialUpdaterFactory;
 
 class BillEntryController extends BaseController
 {
@@ -71,8 +72,6 @@ class BillEntryController extends BaseController
             return $this->returnWithErrors([$e->getErrors()]);
         } catch(\App\ExpenseTracker\Exceptions\ValidationException $e) {
             return $this->returnWithErrors($e->getErrors());
-        } catch(\App\ExpenseTracker\Exceptions\ValidationException $e) {
-            return $this->returnWithErrors($e->getErrors());
         }
 
         return $this->returnParentItem($entry->bill_id);
@@ -80,8 +79,21 @@ class BillEntryController extends BaseController
 
     public function partialUpdate(Request $request, $id)
     {
-        $data = $request->all();
-        return $this->billEntryGateway->partialUpdate($this, $id, $data);
+        $action = $request->input('action', false);
+
+        if(!$action) {
+            return $this->returnWithErrors(['No action has been specified']);
+        }
+
+        $entryPartialUpdater = EntryPartialUpdaterFactory::make($action);
+
+        try{
+            $entry = $entryPartialUpdater->update($id, $request);
+        } catch(\App\ExpenseTracker\Exceptions\ValidationException $e) {
+            return $this->returnWithErrors($e->getErrors());
+        }
+
+        return $this->returnParentItem($entry->bill_id);
     }
 
     public function getPay($id)

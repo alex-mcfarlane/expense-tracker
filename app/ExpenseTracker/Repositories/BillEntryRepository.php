@@ -7,9 +7,9 @@ class BillEntryRepository {
     protected $billEntry;
     protected $error;
     
-    public function __construct(BillEntry $billEntry)
+    public function __construct()
     {
-        $this->billEntry = $billEntry;
+        $this->billEntry = new BillEntry();
     }
     
     public function all($billId)

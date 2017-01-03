@@ -29,6 +29,9 @@ class EntryEditorService{
             throw new \App\ExpenseTracker\Exceptions\ValidationException('Invalid user input', $this->validator->getErrors());
         }
 
+        //fill model with new data
+        $entry->fill($attributes);
+
         // ensure the model is in a valid state
         try{
             $entry->isValid();
@@ -37,7 +40,7 @@ class EntryEditorService{
             throw $e;
         }
  
-        $this->billEntryRepo->update($id, $attributes);
+        $this->billEntryRepo->save($entry);
 
         return $entry;
     }
