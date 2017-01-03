@@ -23,13 +23,15 @@ class BillEntryController extends BaseController
 
 	public function __construct(BillGateway $billGateway, BillEntryGateway $billEntryGateway, BillRepository $billRepository, 
         BillEntryRepository $billEntryRepository, EntryCreatorService $entryCreatorService, EntryEditorService $entryEditorService)
-	{
+	{   
 		$this->billGateway = $billGateway;
 		$this->billEntryGateway = $billEntryGateway;
 		$this->billRepo = $billRepository;
         $this->billEntryRepo = $billEntryRepository;
         $this->entryCreatorService = $entryCreatorService;
         $this->entryEditorService = $entryEditorService;
+        
+        parent::__construct();
 	}
 
     public function create($billId)

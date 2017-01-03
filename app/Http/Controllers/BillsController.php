@@ -17,6 +17,8 @@ class BillsController extends BaseController
         $this->entity = 'bills';
         $this->billRepo = $billRepository;
         $this->billGateway = $billGateway;
+        
+        parent::__construct();
     }
     
     public function index(BillRepository $billRepository)
