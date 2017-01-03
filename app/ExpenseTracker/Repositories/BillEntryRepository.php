@@ -2,6 +2,7 @@
 namespace App\ExpenseTracker\Repositories;
 
 use App\Models\BillEntry;
+use App\ExpenseTracker\Exceptions\EntryNotFoundException;
 
 class BillEntryRepository {
     protected $billEntry;
@@ -21,7 +22,11 @@ class BillEntryRepository {
 
     public function get($id)
     {
-        return $this->billEntry->with('bill')->find($id);
+        if(! $entry = $this->billEntry->with('bill')->find($id)){
+            throw new EntryNotFoundException('Entry not found for the given id of '.$id);
+        }
+        
+        return $entry;
     }
     
     public function create($input)

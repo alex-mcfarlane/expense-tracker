@@ -4,6 +4,8 @@ namespace App\ExpenseTracker\Services;
 use App\ExpenseTracker\Validators\EntryValidator;
 use App\ExpenseTracker\Repositories\BillEntryRepository;
 use App\ExpenseTracker\Exceptions\EntryNotFoundException;
+use App\ExpenseTracker\Exceptions\ValidationException;
+use App\ExpenseTracker\Exceptions\EntryException;
 use Auth;
 use Validator;
 use Request;
@@ -20,26 +22,33 @@ class EntryEditorService{
     public function update($id, array $attributes)
     {
         // does the entry exist?
-        if(!$entry = $this->billEntryRepo->get($id)) {
-            throw new EntryNotFoundException('Entry not found', ['Entry not found with the given id of '.$id]);
+        try{
+            $entry = $this->billEntryRepo->get($id);
+        } catch(EntryNotFoundException $e) {
+            throw new EntryException([$e->getErrors()]);
+        }
+        
+        //is the entry closed
+        if($entry->closed) {
+            throw new EntryException(
+                ['This entry has been closed as the balance has been paid off.']
+            );
         }
 
         // check if the user input is valid
     	if(!$this->validator->isValid($attributes)) {
-            throw new \App\ExpenseTracker\Exceptions\ValidationException('Invalid user input', $this->validator->getErrors());
+            throw new EntryException($this->validator->getErrors());
         }
 
         //fill model with new data
         $entry->fill($attributes);
-
         // ensure the model is in a valid state
         try{
             $entry->isValid();
+        } catch(ValidationException $e) {
+            throw new EntryException($e->getErrors());
         }
-        catch(\App\ExpenseTracker\Exceptions\ValidationException $e){
-            throw $e;
-        }
- 
+
         $this->billEntryRepo->save($entry);
 
         return $entry;

@@ -13,6 +13,7 @@ use App\ExpenseTracker\Repositories\BillEntryRepository;
 use App\ExpenseTracker\Services\EntryCreatorService;
 use App\ExpenseTracker\Services\EntryEditorService;
 use App\ExpenseTracker\Factories\EntryPartialUpdaterFactory;
+use App\ExpenseTracker\Exceptions\EntryException;
 
 class BillEntryController extends BaseController
 {
@@ -70,9 +71,7 @@ class BillEntryController extends BaseController
 
         try{
             $entry = $this->entryEditorService->update($id, $data);
-        } catch(\App\ExpenseTracker\Exceptions\EntryNotFoundException $e){
-            return $this->returnWithErrors([$e->getErrors()]);
-        } catch(\App\ExpenseTracker\Exceptions\ValidationException $e) {
+        } catch(EntryException $e){
             return $this->returnWithErrors($e->getErrors());
         }
 
