@@ -25,7 +25,7 @@ class EntryEditorService{
         try{
             $entry = $this->billEntryRepo->get($id);
         } catch(EntryNotFoundException $e) {
-            throw new EntryException($e->getErrors());
+            throw new EntryException([$e->getErrors()]);
         }
         
         //is the entry closed

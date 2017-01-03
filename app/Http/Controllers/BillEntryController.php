@@ -72,7 +72,7 @@ class BillEntryController extends BaseController
         try{
             $entry = $this->entryEditorService->update($id, $data);
         } catch(EntryException $e){
-            return $this->returnWithErrors([$e->getErrors()]);
+            return $this->returnWithErrors($e->getErrors());
         }
 
         return $this->returnParentItem($entry->bill_id);
