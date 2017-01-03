@@ -25,14 +25,14 @@ class EntryCreatorService {
         //try to retrieve bill object
         $bill = $this->billRepo->get($billID);
         
+        //check if user is authorized for this bill
+        if($bill->user_id != \Auth::id()) {
+            throw new \App\ExpenseTracker\Exceptions\AuthorizationException('Not authorized to access this bill');
+        }
+        
         $entry = Entry::fromForm($attributes);
-        try{
-            $entry->isValid();
-        }
-        catch(\App\ExpenseTracker\Exceptions\ValidationException $e){
-            throw $e;
-            return;
-        }
+
+        $entry->isValid();
         
         $bill->addEntry($entry);
     }
