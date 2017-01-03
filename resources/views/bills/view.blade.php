@@ -40,8 +40,11 @@
                                 Pay In Full
                             <a>
                             <a href="{{URL::to('billEntries/'.$entry->id.'/pay')}}" class="btn btn-sm btn-primary">
-                                Make Payment
+                                Make A Payment
                             <a>
+                            <a href="{{URL::to('billEntries/'.$entry->id.'/edit')}}" class="btn btn-sm btn-primary">
+                                <i class="fa fa-pencil icon-white"></i>
+                            </a>
                             <a href="" class="btn btn-sm btn-danger" 
                                 data-toggle="modal" data-target="#delete-modal-{{$entry->id}}">
                                 <i class="fa fa-trash icon-white"></i>
