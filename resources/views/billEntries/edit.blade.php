@@ -15,7 +15,7 @@
             @if(count($errors->all()) > 0)
                 <div class="alert alert-danger">
                     @foreach($errors->all() as $error)
-                        {{$error}}
+                        {{$error[0]}}
                     @endforeach
                 </div>
             @endif

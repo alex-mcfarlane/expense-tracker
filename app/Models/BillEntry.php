@@ -72,7 +72,7 @@ class BillEntry extends Model
         }
         
         if(count($errors) > 0) {
-            throw new ValidationException('Invalid model', $errors);   
+            throw new ValidationException('Invalid model', $errors);
         }
         return true;
     }
