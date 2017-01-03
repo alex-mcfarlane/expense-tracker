@@ -52,7 +52,7 @@ class BillEntryController extends BaseController
         } catch(\App\ExpenseTracker\Exceptions\ValidationException $e) {
             return $this->returnWithErrors($e->getErrors());
         }
-        catch(\App\ExpenseTracker\Exceptions\ValidationException $e){
+        catch(\App\ExpenseTracker\Exceptions\AuthorizationException $e){
             return $this->returnWithErrors([$e->getErrors()]);
         }
         

@@ -17,7 +17,6 @@ class BillEntry extends Model
         $entry->fill($attributes);
         
         return $entry;
-        
     }
     
     public function bill()
