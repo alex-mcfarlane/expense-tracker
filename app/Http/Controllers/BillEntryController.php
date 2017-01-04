@@ -50,11 +50,8 @@ class BillEntryController extends BaseController
     {       
         try{
             $this->entryCreatorService->make($billId, $request->only('due_date', 'amount', 'paid'));
-        } catch(\App\ExpenseTracker\Exceptions\ValidationException $e) {
+        } catch(EntryException $e) {
             return $this->returnWithErrors($e->getErrors());
-        }
-        catch(\App\ExpenseTracker\Exceptions\AuthorizationException $e){
-            return $this->returnWithErrors([$e->getErrors()]);
         }
         
         return $this->returnparentItem($billId);

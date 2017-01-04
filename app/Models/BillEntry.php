@@ -12,13 +12,16 @@ class BillEntry extends Model
     protected $fillable = ['due_date', 'amount', 'paid'];
     protected $appends = array('balance');
 
-    public static function fromForm(array $attributes)
+    public static function fromForm($bill, array $attributes)
     {
         $entry = new static;
         $entry->closed = false;
         $entry->fill($attributes);
         
-        return $entry;
+        if($entry->canEdit($bill)) {
+            $entry->isValid();
+            return $entry;
+        }
     }
     
     public function bill()
@@ -86,10 +89,12 @@ class BillEntry extends Model
         return true;
     }
 
-    private function canEdit()
+    private function canEdit($bill = null)
     {
         //check if user is authorized for this bill
-        if($this->bill->user_id != \Auth::id()) {
+        $bill ? $userId = $bill->user_id : $userId = $this->bill->user_id;
+        // TODO: Probably shouldn't use the Auth facade within the model. Refactor later
+        if($userId != \Auth::id()) {
             throw new \App\ExpenseTracker\Exceptions\AuthorizationException('Not authorized to access this bill');
         }
         //is the entry closed
