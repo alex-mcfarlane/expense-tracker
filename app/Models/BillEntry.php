@@ -67,9 +67,6 @@ class BillEntry extends Model
         if($this->paid > $this->amount) {
             $errors[] = "Amount paid cannot be greater than total bill amount.";
         }
-        else if($this->paid > $this->balance) {
-            $errors[] = "Amount paid cannot be greater than the balance owing.";
-        }
         
         if(count($errors) > 0) {
             throw new ValidationException('Invalid model', $errors);
