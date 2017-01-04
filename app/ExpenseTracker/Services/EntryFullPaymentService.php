@@ -32,7 +32,7 @@ class EntryFullPaymentService implements IEntryPartialUpdater{
         }
         //check that entry exists
         if(!$entry = $this->entryRepo->get($id)) {
-            throw new EntryException(['Entry not found for given id of '.$id]);
+            throw new EntryNotFoundException('Entry not found for given id of '.$id);
         }
         
         //pay the entry in full

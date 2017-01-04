@@ -27,7 +27,7 @@ class EntryPaymentService implements IEntryPartialUpdater
         } 
         // does the entry exist?
         if(!$entry = $this->entryRepo->get($id)) {
-            throw new EntryException(['Entry not found with the given id of '.$id]);
+            throw new EntryNotFoundException('Entry not found for given id of '.$id);
         }
 
         try{

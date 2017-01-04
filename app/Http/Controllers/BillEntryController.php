@@ -10,7 +10,7 @@ use App\ExpenseTracker\Repositories\BillRepository;
 use App\ExpenseTracker\Repositories\BillEntryRepository;
 use App\ExpenseTracker\Services\EntryCreatorService;
 use App\ExpenseTracker\Services\EntryEditorService;
-use App\ExpenseTracker\Factories\EntryPartialUpdaterFactory;
+use App\ExpenseTracker\Services\EntryPartialUpdaterService;
 use App\ExpenseTracker\Exceptions\EntryException;
 
 class BillEntryController extends BaseController
@@ -72,20 +72,8 @@ class BillEntryController extends BaseController
 
     public function partialUpdate(Request $request, $id)
     {
-        $action = $request->input('action', false);
-
-        if(!$action) {
-            return $this->returnWithErrors(['No action has been specified']);
-        }
-
         try{
-            $entryPartialUpdater = EntryPartialUpdaterFactory::make($action);
-        } catch(EntryException $e) {
-            return $this->returnWithErrors($e->getErrors());
-        }
-
-        try{
-            $entry = $entryPartialUpdater->update($id, $request);
+            $entry = EntryPartialUpdaterService::update($request, $id);
         } catch(EntryException $e) {
             return $this->returnWithErrors($e->getErrors());
         }
