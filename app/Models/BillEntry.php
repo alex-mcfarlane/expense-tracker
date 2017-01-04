@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\ExpenseTracker\Exceptions\ValidationException;
+use App\ExpenseTracker\Exceptions\EntryException;
 use Auth;
 
 class BillEntry extends Model
@@ -41,6 +42,15 @@ class BillEntry extends Model
 		return $balance;
     }
 
+    public function edit($attributes)
+    {
+        if($this->canEdit())
+        {
+            $this->fill($attributes);
+            $this->isValid();
+        }
+    }
+
     public function pay($payment)
     {
         if($this->paid + $payment > $this->amount) {
@@ -60,7 +70,7 @@ class BillEntry extends Model
         $this->pay($this->balance);
     }
 
-    public function isValid()
+    private function isValid()
     {
         $errors = [];
 
@@ -71,6 +81,22 @@ class BillEntry extends Model
         if(count($errors) > 0) {
             throw new ValidationException('Invalid model', $errors);
         }
+        return true;
+    }
+
+    private function canEdit()
+    {
+        //check if user is authorized for this bill
+        if($this->bill->user_id != \Auth::id()) {
+            throw new \App\ExpenseTracker\Exceptions\AuthorizationException('Not authorized to access this bill');
+        }
+        //is the entry closed
+        if($this->closed) {
+            throw new EntryException(
+                ['This entry has been closed as the balance has been paid off.']
+            );
+        }
+
         return true;
     }
     
