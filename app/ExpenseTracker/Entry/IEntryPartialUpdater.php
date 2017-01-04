@@ -1,5 +1,5 @@
 <?php
-namespace App\ExpenseTracker\Services;
+namespace App\ExpenseTracker\Entry;
 
 interface IEntryPartialUpdater
 {

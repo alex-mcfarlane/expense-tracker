@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ExpenseTracker\Services;
+namespace App\ExpenseTracker\Entry;
 
 use App\ExpenseTracker\Validators\EntryFullPaymentValidator;
 use App\ExpenseTracker\Repositories\BillEntryRepository;
@@ -12,7 +12,7 @@ use App\ExpenseTracker\Exceptions\EntryException;
  *
  * @author Alex McFarlane
  */
-class EntryFullPaymentService implements IEntryPartialUpdater{
+class EntryFullPayment implements IEntryPartialUpdater{
     
     protected $validator;
     protected $entryRepo;
