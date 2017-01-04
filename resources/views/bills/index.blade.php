@@ -26,7 +26,7 @@
                     <tr>
                         <td><a href="{{URL::to('bills/view/'.$bill->id)}}">{{$bill->name}}</a></td>
                         <td></td>
-                        <td></td>
+                        <td>{{$bill->totalBalance}}</td>
                         <td></td>
                     </tr>
                 @endforeach

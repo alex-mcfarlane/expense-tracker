@@ -5,6 +5,7 @@ use App\ExpenseTracker\Repositories\BillEntryRepository;
 use App\ExpenseTracker\Repositories\BillRepository;
 use Auth;
 use Validator;
+use Request;
 
 class BillEntryGateway extends BaseGateway{
     protected $billEntryRepo;
@@ -16,8 +17,17 @@ class BillEntryGateway extends BaseGateway{
         $this->billRepo = $billRepository;
     }
     
+    public function get($id)
+    {
+        $entry = $this->billEntryRepo->get($id);
+
+        return $entry;
+    }
+
     public function create($listener, $billId, $input)
     {
+        $input['due_date'] = (string) $input['due_date'];
+        
         if(!$this->validate($input)) {
             return $listener->returnWithErrors($this->errors);
         }
@@ -34,21 +44,47 @@ class BillEntryGateway extends BaseGateway{
         return $listener->returnParentItem($entry->bill_id);
     }
 
-    public function get($id)
+    public function update($id, $data)
     {
-        $bill = $this->billRepo->get($id);
-        $entries = $bill->entries;
+        return $this->billEntryRepo->update($entry->id, $data);
+    }
 
-        return [
-            'bill' => $bill,
-            'entries' => $entries
-        ];
+    public function partialUpdate($listener, $id, $data)
+    {
+        if(! $entry = $this->billEntryRepo->get($id)) {
+            return $listener->returnWithErrors(['Bill entry not found']);
+        }
+
+        if(isset($data['payment'])) {
+            //make an explicit payment
+            if(! $entry->pay($data['payment'])) {
+                return $listener->returnWithErrors(['Amount exceeds remaining balance']);
+            }
+        }
+
+        if(isset($data['pay']) && $data['pay'] == true) {
+            //pay bill in full
+            $entry->payFull();
+        }
+
+        //TODO partial update of other fields
+        $this->billEntryRepo->save($entry);
+
+        if(Request::ajax())
+        {
+            return $listener->returnJSON($entry);
+        }
+        else{
+            return $listener->returnParentItem($entry->bill_id);
+        }
     }
 
     private function validate(array $input)
     {
+        $isValid = true;
+
         $validator = Validator::make($input, [
-            'due_datae' => 'date',
+            'due_date' => 'date',
             'amount' => 'required|numeric|min:0',
             'balance' => 'numeric|min:0',
             'paid' => 'numeric|min:0',
@@ -56,9 +92,13 @@ class BillEntryGateway extends BaseGateway{
 
         if($validator->fails()) {
             $this->errors = $validator->errors();
-            return false;
+            $isValid = false;
+        }
+        else if($input['paid'] > $input['amount']) {
+            $this->errors[] = 'Payment amount exceeds remaining balance.';
+            $isValid = false;
         }
 
-        return true;
+        return $isValid;
     }
 }
