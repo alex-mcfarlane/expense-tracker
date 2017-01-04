@@ -4,7 +4,7 @@ namespace App\ExpenseTracker\Factories;
 
 use App\ExpenseTracker\Services\EntryPaymentService;
 use App\ExpenseTracker\Services\EntryFullPaymentService;
-use App\ExpenseTracker\Validators\EntryValidator;
+use App\ExpenseTracker\Validators\EntryFullPaymentValidator;
 use App\ExpenseTracker\Validators\EntryPaymentValidator;
 use App\ExpenseTracker\Repositories\BillEntryRepository;
 
@@ -16,7 +16,9 @@ class EntryPartialUpdaterFactory
 			case 'payment':
 				return new EntryPaymentService(new EntryPaymentValidator, new BillEntryRepository);
 			case 'full_payment':
-				return new EntryFullPaymentService(new EntryValidator, new BillEntryRepository);
+				return new EntryFullPaymentService(new EntryFullPaymentValidator, new BillEntryRepository);
+            default:
+                throw new \App\ExpenseTracker\Exceptions\EntryException(['An invalid action has been supplied']);
 		}
 	}
 }

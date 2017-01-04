@@ -78,15 +78,25 @@ class BillEntryController extends BaseController
             return $this->returnWithErrors(['No action has been specified']);
         }
 
-        $entryPartialUpdater = EntryPartialUpdaterFactory::make($action);
+        try{
+            $entryPartialUpdater = EntryPartialUpdaterFactory::make($action);
+        } catch(EntryException $e) {
+            return $this->returnWithErrors($e->getErrors());
+        }
 
         try{
             $entry = $entryPartialUpdater->update($id, $request);
         } catch(EntryException $e) {
             return $this->returnWithErrors($e->getErrors());
         }
-
-        return $this->returnParentItem($entry->bill_id);
+        
+        if($request->ajax())
+        {
+            return $this->returnJSON($entry);
+        }
+        else{
+            return $this->returnParentItem($entry->bill_id);
+        }
     }
 
     public function getPay($id, EntryDisplay $entryDisplay)

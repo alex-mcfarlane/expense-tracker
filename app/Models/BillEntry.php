@@ -72,7 +72,9 @@ class BillEntry extends Model
 
     public function payFull()
     {
-        $this->pay($this->balance);
+        if($this->canEdit()) {
+            $this->pay($this->balance);
+        }
     }
 
     private function isValid()
