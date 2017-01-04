@@ -13,6 +13,7 @@ $(document).ready(function(){
 				'X-CSRF-TOKEN': csrfToken
 			},
 			data: {
+                action: "full_payment",
 				pay: true
 			},
 			success: function(data) {

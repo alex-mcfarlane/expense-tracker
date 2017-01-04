@@ -68,7 +68,6 @@
                           </div>
 
                           <div class="modal-footer">
-                            <input type="hidden" name="_token" value=>
 
                             <a class="btn btn-primary pay-bill" href="{{URL::to('billEntries/'.$entry->id)}}"
                                 data-token="{{ csrf_token() }}" data-base-url="{{URL::to('billEntries/')}}" 
@@ -100,7 +99,6 @@
                           </div>
 
                           <div class="modal-footer">
-                            <input type="hidden" name="_token" value=>
 
                             <a class="btn btn-primary delete-bill" href="{{URL::to('billEntries/'.$entry->id)}}"
                                 data-token="{{ csrf_token() }}" data-base-url="{{URL::to('billEntries/')}}" 

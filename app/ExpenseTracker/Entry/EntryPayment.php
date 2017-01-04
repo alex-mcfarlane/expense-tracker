@@ -1,5 +1,5 @@
 <?php
-namespace App\ExpenseTracker\Services;
+namespace App\ExpenseTracker\Entry;
 
 use App\ExpenseTracker\Validators\EntryPaymentValidator;
 use App\ExpenseTracker\Repositories\BillEntryRepository;
@@ -7,7 +7,7 @@ use App\ExpenseTracker\Exceptions\EntryException;
 use App\ExpenseTracker\Exceptions\ValidationException;
 use App\ExpenseTracker\Exceptions\AuthorizationException;
 
-class EntryPaymentService implements IEntryPartialUpdater
+class EntryPayment implements IEntryPartialUpdater
 {
 	protected $entryValidator;
 	protected $entryRepo;
@@ -27,7 +27,7 @@ class EntryPaymentService implements IEntryPartialUpdater
         } 
         // does the entry exist?
         if(!$entry = $this->entryRepo->get($id)) {
-            throw new EntryException(['Entry not found with the given id of '.$id]);
+            throw new EntryNotFoundException('Entry not found for given id of '.$id);
         }
 
         try{

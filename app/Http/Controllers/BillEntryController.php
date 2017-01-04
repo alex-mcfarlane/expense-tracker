@@ -6,27 +6,22 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 
 use App\ExpenseTracker\Entry\EntryDisplay;
-use App\ExpenseTracker\Gateways\BillGateway;
-use App\ExpenseTracker\Gateways\BillEntryGateway;
 use App\ExpenseTracker\Repositories\BillRepository;
 use App\ExpenseTracker\Repositories\BillEntryRepository;
 use App\ExpenseTracker\Services\EntryCreatorService;
 use App\ExpenseTracker\Services\EntryEditorService;
-use App\ExpenseTracker\Factories\EntryPartialUpdaterFactory;
+use App\ExpenseTracker\Services\EntryPartialUpdaterService;
 use App\ExpenseTracker\Exceptions\EntryException;
 
 class BillEntryController extends BaseController
 {
-	protected $billGateway;
 	protected $billRepo;
     protected $entryEditorService;
 	protected $parentEntity = 'bills';
 
-	public function __construct(BillGateway $billGateway, BillEntryGateway $billEntryGateway, BillRepository $billRepository, 
-        BillEntryRepository $billEntryRepository, EntryCreatorService $entryCreatorService, EntryEditorService $entryEditorService)
+	public function __construct(BillRepository $billRepository, BillEntryRepository $billEntryRepository, 
+            EntryCreatorService $entryCreatorService, EntryEditorService $entryEditorService)
 	{   
-		$this->billGateway = $billGateway;
-		$this->billEntryGateway = $billEntryGateway;
 		$this->billRepo = $billRepository;
         $this->billEntryRepo = $billEntryRepository;
         $this->entryCreatorService = $entryCreatorService;
@@ -50,11 +45,8 @@ class BillEntryController extends BaseController
     {       
         try{
             $this->entryCreatorService->make($billId, $request->only('due_date', 'amount', 'paid'));
-        } catch(\App\ExpenseTracker\Exceptions\ValidationException $e) {
+        } catch(EntryException $e) {
             return $this->returnWithErrors($e->getErrors());
-        }
-        catch(\App\ExpenseTracker\Exceptions\AuthorizationException $e){
-            return $this->returnWithErrors([$e->getErrors()]);
         }
         
         return $this->returnparentItem($billId);
@@ -80,33 +72,24 @@ class BillEntryController extends BaseController
 
     public function partialUpdate(Request $request, $id)
     {
-        $action = $request->input('action', false);
-
-        if(!$action) {
-            return $this->returnWithErrors(['No action has been specified']);
-        }
-
-        $entryPartialUpdater = EntryPartialUpdaterFactory::make($action);
-
         try{
-            $entry = $entryPartialUpdater->update($id, $request);
+            $entry = EntryPartialUpdaterService::update($request, $id);
         } catch(EntryException $e) {
             return $this->returnWithErrors($e->getErrors());
         }
-
-        return $this->returnParentItem($entry->bill_id);
+        
+        if($request->ajax())
+        {
+            return $this->returnJSON($entry);
+        }
+        else{
+            return $this->returnParentItem($entry->bill_id);
+        }
     }
 
-    public function getPay($id)
-    {
-        if(! $entry = $this->billEntryGateway->get($id))
-        {
-            return $this->returnWithErrors(['Bill entry not found']);
-        }
-
-        $data = [
-            'entry' => $entry
-        ];
+    public function getPay($id, EntryDisplay $entryDisplay)
+    {   
+        $data = $entryDisplay->make($id);
 
         return view('billEntries.pay', $data);
     }

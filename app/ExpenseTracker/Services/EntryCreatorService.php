@@ -3,6 +3,9 @@ namespace App\ExpenseTracker\Services;
 
 use App\ExpenseTracker\Validators\EntryValidator;
 use App\ExpenseTracker\Repositories\BillRepository;
+use App\ExpenseTracker\Exceptions\ValidationException;
+use App\ExpenseTracker\Exceptions\EntryException;
+use App\ExpenseTracker\Exceptions\AuthorizationException;
 use App\Models\Billentry as Entry;
 
 class EntryCreatorService {
@@ -19,20 +22,19 @@ class EntryCreatorService {
     {
         //user input validation
         if(! $this->validator->isValid($attributes)) {
-            throw new \App\ExpenseTracker\Exceptions\ValidationException('Invalid user input', $this->validator->getErrors());
+            throw new EntryException($this->validator->getErrors());
         }
         
         //try to retrieve bill object
         $bill = $this->billRepo->get($billID);
         
-        //check if user is authorized for this bill
-        if($bill->user_id != \Auth::id()) {
-            throw new \App\ExpenseTracker\Exceptions\AuthorizationException('Not authorized to access this bill');
+        try{
+            $entry = Entry::fromForm($bill, $attributes);
+        } catch(AuthorizationException $e) {
+            throw new EntryException($e->getErrors());
+        } catch(ValidationException $e) {
+            throw new EntryException($e->getErrors());
         }
-        
-        $entry = Entry::fromForm($attributes);
-
-        $entry->isValid();
         
         $bill->addEntry($entry);
     }
