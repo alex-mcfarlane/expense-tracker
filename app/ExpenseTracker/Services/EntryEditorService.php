@@ -29,8 +29,6 @@ class EntryEditorService{
             throw new EntryException([$e->getErrors()]);
         }
 
-
-
         // check if the user input is valid
     	if(!$this->validator->isValid($attributes)) {
             throw new EntryException($this->validator->getErrors());

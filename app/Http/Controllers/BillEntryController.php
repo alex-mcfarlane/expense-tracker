@@ -90,7 +90,7 @@ class BillEntryController extends BaseController
 
         try{
             $entry = $entryPartialUpdater->update($id, $request);
-        } catch(\App\ExpenseTracker\Exceptions\ValidationException $e) {
+        } catch(EntryException $e) {
             return $this->returnWithErrors($e->getErrors());
         }
 

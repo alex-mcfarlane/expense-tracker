@@ -53,15 +53,17 @@ class BillEntry extends Model
 
     public function pay($payment)
     {
-        if($this->paid + $payment > $this->amount) {
-            throw new ValidationException('Invalid model', ['Cumulative amount paid cannot be greater than the 
-                balance owing']);
-        }
+        if($this->canEdit()) {
+            if($this->paid + $payment > $this->amount) {
+                throw new ValidationException('Invalid model', ['Cumulative amount paid cannot be greater than the 
+                    balance owing']);
+            }
 
-    	$this->paid += $payment;
-        
-        if($this->isPaid()) {
-            $this->markAsClosed();
+            $this->paid += $payment;
+
+            if($this->isPaid()) {
+                $this->markAsClosed();
+            }
         }
     }
 
