@@ -16,6 +16,8 @@ use App\ExpenseTracker\Exceptions\EntryException;
 class BillEntryController extends BaseController
 {
 	protected $billRepo;
+    protected $billEntryRepo;
+    protected $entryCreatorService;
     protected $entryEditorService;
 	protected $parentEntity = 'bills';
 
