@@ -4,7 +4,7 @@ namespace App\ExpenseTracker\Services;
 
 use App\ExpenseTracker\Repositories\BillRepository;
 use App\ExpenseTracker\Validators\BillValidator;
-use App\ExpenseTracker\Exceptions\EntryException;
+use App\ExpenseTracker\Exceptions\BillException;
 use App\Models\Bill;
 
 /**
@@ -27,10 +27,19 @@ class BillCreatorService
     public function make(array $attributes)
     {
         if(!$this->validator->isValid($attributes)) {
-            throw new EntryException($this->validator->getErrors());
+            throw new BillException($this->validator->getErrors());
         }
         
-        $bill = Bill::forCurrentUser($attributes['name']);
+        try{
+            $bill = Bill::forCurrentUser($attributes['name']);
+        } catch(\Illuminate\Database\QueryException $e) {
+            if($e->errorInfo[1] == 1062) {
+                throw new BillException(['A bill already exists with the name you have supplied']);
+            }
+            else{
+                throw new BillException(['A database error occured']);
+            }
+        }
         
         $this->billRepo->save($bill);
         

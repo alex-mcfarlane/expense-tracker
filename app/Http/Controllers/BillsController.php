@@ -7,6 +7,7 @@ use App\Http\Requests;
 use App\ExpenseTracker\Repositories\BillRepository;
 use App\ExpenseTracker\Gateways\BillGateway;
 use App\ExpenseTracker\Services\BillCreatorService;
+use App\ExpenseTracker\Exceptions\BillException;
 
 class BillsController extends BaseController
 {
@@ -50,7 +51,11 @@ class BillsController extends BaseController
     
     public function store(Request $request)
     {
-        $bill = $this->billCreatorService->make($request->only('name'));
+        try{
+            $bill = $this->billCreatorService->make($request->only('name'));
+        } catch(BillException $e) {
+            return $this->returnWithErrors($e->getErrors());
+        }
         
         return $this->returnItem($bill);
     }
