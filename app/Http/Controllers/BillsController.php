@@ -6,17 +6,21 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\ExpenseTracker\Repositories\BillRepository;
 use App\ExpenseTracker\Gateways\BillGateway;
+use App\ExpenseTracker\Services\BillCreatorService;
 
 class BillsController extends BaseController
 {
     protected $billGateway;
     protected $billRepo;
+    protected $billCreatorService;
     
-    public function __construct(BillGateway $billGateway, BillRepository $billRepository)
+    public function __construct(BillGateway $billGateway, BillRepository $billRepository, 
+            BillCreatorService $billCreatorService)
     {
         $this->entity = 'bills';
         $this->billRepo = $billRepository;
         $this->billGateway = $billGateway;
+        $this->billCreatorService = $billCreatorService;
         
         parent::__construct();
     }
@@ -46,7 +50,8 @@ class BillsController extends BaseController
     
     public function store(Request $request)
     {
-        $data = $request->input();
-        return $this->billGateway->create($this, $data);
+        $bill = $this->billCreatorService->make($request->only('name'));
+        
+        return $this->returnItem($bill);
     }
 }

@@ -29,4 +29,9 @@ class BillRepository {
         
         return $bill;
     }
+    
+    public function save($model)
+    {
+        return $model->save();
+    }
 }
