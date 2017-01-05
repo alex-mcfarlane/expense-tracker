@@ -5,22 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\ExpenseTracker\Repositories\BillRepository;
-use App\ExpenseTracker\Gateways\BillGateway;
 use App\ExpenseTracker\Services\BillCreatorService;
+use App\ExpenseTracker\Bills\BillDisplay;
 use App\ExpenseTracker\Exceptions\BillException;
 
 class BillsController extends BaseController
 {
-    protected $billGateway;
     protected $billRepo;
     protected $billCreatorService;
     
-    public function __construct(BillGateway $billGateway, BillRepository $billRepository, 
+    public function __construct(BillRepository $billRepository, 
             BillCreatorService $billCreatorService)
     {
         $this->entity = 'bills';
         $this->billRepo = $billRepository;
-        $this->billGateway = $billGateway;
         $this->billCreatorService = $billCreatorService;
         
         parent::__construct();
@@ -37,9 +35,9 @@ class BillsController extends BaseController
         return view('bills.index', $data);
     }
 
-    public function view($id)
+    public function view($id, BillDisplay $billDisplay)
     {
-        $data = $this->billGateway->get($id);
+        $data = $billDisplay->make($id);
 
         return view('bills.view', $data);
     }
