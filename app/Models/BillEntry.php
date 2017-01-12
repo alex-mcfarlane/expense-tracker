@@ -15,15 +15,15 @@ class BillEntry extends Model
     public static function fromForm($bill, array $attributes)
     {
         $entry = new static;
+        $attributes["closed"] = false;
         
         if($entry->canEdit($bill)) {
-            $attributes["closed"] = false;
-            
-            $entry->fill($attributes);
-            
-            if($entry->isValid()) {
-                return $entry;   
+            if($entry->process($attributes))
+            {
+                return $entry;
             }
+            
+            return false;
         }
     }
     
@@ -52,14 +52,28 @@ class BillEntry extends Model
     {
         if($this->canEdit())
         {
-            $this->fill($attributes);
-            
-            if($this->isValid()) {
+            if($this->process($attributes)) {
                 return true;
             }
         }
     }
-
+    
+    public function process($data)
+    {
+        $this->fill($attributes);
+        
+        //check if entity is in valid state
+        if($this->isValid()) {
+            //if a bill is paid, mark it as closed
+            if($this->isPaid()) {
+                $this->markAsClosed();
+            }
+            
+            return true;   
+        }
+        return false;
+    }
+    
     public function pay($payment)
     {
         if($this->canEdit()) {
