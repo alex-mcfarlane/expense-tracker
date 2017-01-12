@@ -15,12 +15,15 @@ class BillEntry extends Model
     public static function fromForm($bill, array $attributes)
     {
         $entry = new static;
-        $entry->closed = false;
-        $entry->fill($attributes);
         
         if($entry->canEdit($bill)) {
-            $entry->isValid();
-            return $entry;
+            $attributes["closed"] = false;
+            
+            $entry->fill($attributes);
+            
+            if($entry->isValid()) {
+                return $entry;   
+            }
         }
     }
     
@@ -50,7 +53,10 @@ class BillEntry extends Model
         if($this->canEdit())
         {
             $this->fill($attributes);
-            $this->isValid();
+            
+            if($this->isValid()) {
+                return true;
+            }
         }
     }
 
@@ -88,6 +94,7 @@ class BillEntry extends Model
         if(count($errors) > 0) {
             throw new ValidationException('Invalid model', $errors);
         }
+        
         return true;
     }
 
